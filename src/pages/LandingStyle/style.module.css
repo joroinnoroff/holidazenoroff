@@ -1,0 +1,171 @@
+.Container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+}
+
+.Video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Ensures the video covers the entire container */
+}
+
+.TextOverlay {
+  position: absolute;
+  top: 80%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+}
+
+.LOGO {
+  font-size: 10vw;
+  font-weight: bold;
+  display: flex;
+  width: 100%;
+}
+
+.TextOverlay h2 {
+  font-size: 2.5vw;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  /* Example styling for text color */
+}
+
+
+.About {
+  height: 100vh;
+  background-color: #050505;
+  color: #fff;
+}
+
+.Heading {
+  font-size: 6vw;
+  font-weight: 600;
+
+  background-image: linear-gradient(45deg, rgba(73, 200, 232, 0.645) 0%, rgba(38, 152, 197, 0.775) 10%, rgba(191, 33, 98, 25) 100%);
+  -webkit-background-clip: text;
+  /* This is to clip the gradient to the text */
+  -webkit-text-fill-color: transparent;
+  /* This makes the text transparent, revealing the gradient background */
+
+
+}
+
+.Heading2 {
+  font-size: 6vw;
+  font-weight: 600;
+
+  background-image: linear-gradient(45deg, rgba(73, 200, 232, 0.645) 0%, rgba(38, 152, 197, 0.775) 10%, rgba(191, 33, 98, 25) 100%);
+  -webkit-background-clip: text;
+  /* This is to clip the gradient to the text */
+  -webkit-text-fill-color: transparent;
+  /* This makes the text transparent, revealing the gradient background */
+
+
+}
+
+.About p {
+  font-size: 2vw;
+  font-weight: 100;
+}
+
+.About ul {
+  margin-top: 1rem;
+}
+
+.About li {
+  padding: 0.25rem;
+}
+
+.columnContainer {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  width: 100%;
+  padding: 3rem;
+  text-transform: uppercase;
+}
+
+.columnLeft {
+  flex: 1;
+}
+
+.columnRight {
+  flex: 1;
+  max-width: 900px;
+  /* Adjust this value as needed */
+}
+
+.CircleCon {
+  display: flex;
+  gap: 2.5rem;
+}
+
+.Circle {
+  position: relative;
+  text-align: center;
+  margin-top: 5rem;
+  width: 129px;
+  height: 129px;
+  border-radius: 50%;
+  background-image: linear-gradient(45deg, rgba(100, 79, 235, 0.645) 0%, rgba(51, 97, 237, 0.775) 80%, rgba(191, 33, 98, 25) 100%);
+}
+
+.Holder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem;
+
+}
+
+.Circle span {
+  position: relative;
+  margin-top: 1rem;
+  color: #fff;
+  font-weight: 300;
+
+}
+
+/* Media query for smaller devices */
+@media (max-width: 900px) {
+
+  .About {
+    height: 100%;
+  }
+
+  .columnContainer {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .columnRight {
+    max-width: 100%;
+    /* Adjust to fit smaller screens */
+  }
+
+  .CircleCon {
+    gap: 1.25rem;
+  }
+
+  .Holder {
+    padding: 0.25rem;
+  }
+
+  .Circle {
+    width: 80px;
+    height: 80px;
+
+  }
+
+  .Circle span {
+    font-size: 9px;
+  }
+}

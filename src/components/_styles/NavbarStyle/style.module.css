@@ -1,0 +1,61 @@
+.Navigation {
+  display: flex;
+  gap: 5rem;
+  justify-content: space-around;
+  align-items: center;
+  background-color: transparent;
+
+  z-index: 2;
+  top: 0;
+  width: 40%;
+}
+
+img {
+  color: #fff;
+}
+
+
+
+
+/* CSS */
+.button1 {
+  background-color: #EA4C89;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-family: "Haas Grot Text R Web", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  height: 50px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 36px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  display: flex;
+  align-items: center;
+}
+
+.button1:hover,
+.button1:focus {
+  background-color: #F082AC;
+}
+
+
+
+@media (max-width:768px) {
+  img {
+    width: 150px;
+  }
+}

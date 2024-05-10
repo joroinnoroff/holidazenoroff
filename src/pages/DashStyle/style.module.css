@@ -1,0 +1,10 @@
+.SliderCon {
+  margin-top: 15rem;
+}
+
+.SliderCon img {
+  height: 550px;
+  width: 550px;
+  object-fit: cover;
+  border-radius: 5%;
+}
