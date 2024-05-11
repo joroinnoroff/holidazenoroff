@@ -2,30 +2,20 @@ import { CarFront, PawPrint, Settings, Star, Users, Utensils, Wifi } from "lucid
 import React, { useState, useEffect } from "react";
 import Calendar from "react-calendar";
 import { useParams, Link } from "react-router-dom";
+import { toast, Toaster } from "sonner";
 
 export default function VenuesID() {
   const { id } = useParams();
   const [venue, setVenue] = useState(null);
   const [selectedMedia, setSelectedMedia] = useState(0);
+  const [formData, setFormData] = useState({
+    id: id,
+    dateTo: "",
+    dateFrom: "",
+    guests: 0
+  })
 
-  const [dateFrom, setDateFrom] = useState(new Date());
-  const [dateTo, setDateTo] = useState(new Date());
-  const [calendarVisible, setCalendarVisible] = useState(false);
 
-
-  const handleDateChange = (date) => {
-    if (!calendarVisible) return; // Check if calendar is visible
-    if (!dateFrom) {
-      setDateFrom(date);
-    } else {
-      setDateTo(date);
-    }
-    console.log("Selected date:", date);
-  };
-
-  const toggleCalendar = () => {
-    setCalendarVisible(!calendarVisible);
-  };
 
 
   useEffect(() => {
@@ -58,6 +48,67 @@ export default function VenuesID() {
     fetchVenue();
   }, [id]);
 
+  const handleChange = (e) => {
+    const { id, dateFrom, dateTo, guests } = e.target;
+
+  }
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent default form submission behavior
+
+    try {
+      const accessToken = localStorage.getItem("accessToken");
+      if (!accessToken) {
+        throw new Error("Access token not found");
+      }
+
+      // Access form data from state
+      const { id, dateFrom, dateTo, guests } = formData;
+
+      // Perform any necessary validation here
+
+      // Create request body
+      const requestBody = {
+        venueId: id,
+        dateFrom: dateFrom,
+        dateTo: dateTo,
+        guests: guests
+      };
+
+
+      const response = await fetch("https://nf-api.onrender.com/api/v1/holidaze/bookings?_customer=true&_venue=true", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}` // Include Authorization header
+        },
+        body: JSON.stringify(requestBody),
+      });
+
+
+      if (!response.ok) {
+        throw new Error("Failed to create booking");
+      }
+
+      toast.success(`Booking ${venue.name} successfull`)
+      console.log("Form Data:", formData);
+
+      // Reset form data after successful submission (optional)
+      setFormData({
+        id: venue.id,
+        dateTo: "",
+        dateFrom: "",
+        guests: 0
+      });
+
+      // Optionally, handle success response here
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      // Optionally, handle error here
+    }
+  };
+
+
+
   // Function to handle click on media thumbnails
   const handleMediaClick = (index) => {
     setSelectedMedia(index); // Update selectedMedia state with the clicked index
@@ -69,8 +120,10 @@ export default function VenuesID() {
 
 
 
+
   return (
     <div className="w-full h-screen mb-20">
+      <Toaster />
       {/* Render big preview of selected media */}
       <div className="p-8 grid grid-cols-1 md:grid-cols-2">
         <div className="">
@@ -128,28 +181,34 @@ export default function VenuesID() {
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-center">
-            <button onClick={toggleCalendar}>
-              {calendarVisible ? "Hide Calendar" : "Show Calendar"}
-            </button>
-          </div>
-          {calendarVisible && (
-            <div className="flex flex-col items-center justify-center mt-4">
-              <Calendar
-                onChange={handleDateChange}
-                value={calendarVisible ? dateFrom : null} // Pass dateFrom as the value if calendarVisible is true, otherwise pass null
-                selectRange={true}
-                minDate={new Date()}
+          <form onSubmit={handleSubmit}>
+            <div className="flex items-center justify-center">
+              <h2>Set a date from</h2>
+              <input
+                type="date"
+                value={formData.dateFrom}
+                onChange={(e) => setFormData({ ...formData, dateFrom: e.target.value })}
               />
-
-              <div className="flex items-center justify-center mt-2">
-                {/* Check if dateTo is a valid Date object before calling toLocaleDateString */}
-                <p className="mr-2">Selected Dates: {dateFrom.toLocaleDateString()} - {dateTo instanceof Date ? dateTo.toLocaleDateString() : ''}</p>
-                {/* Clear button to remove selected dates */}
-                <button onClick={() => { setDateFrom(null); setDateTo(null); }}>Clear</button>
-              </div>
             </div>
-          )}
+            <div className="flex items-center justify-center">
+              <h2>Set a date To</h2>
+              <input
+                type="date"
+                value={formData.dateTo}
+                onChange={(e) => setFormData({ ...formData, dateTo: e.target.value })}
+              />
+            </div>
+
+            <h2>How many Guests are coming ?</h2>
+            <input
+              type="number"
+              value={formData.guests}
+              onChange={(e) => setFormData({ ...formData, guests: +e.target.value })}
+            />
+
+            <button type="submit">Submit</button>
+          </form>
+
         </div>
       </div>
       <hr className="my-5 w-full" />
@@ -159,7 +218,7 @@ export default function VenuesID() {
           <p className="opacity-65 font-extralight">{venue.location.address}, {venue.location.city}, {venue.location.country}</p>
         </div>
         <iframe
-          src={`https://maps.google.com/maps?q=${venue.location.country},${venue.location.address}&hl=en&z=14&output=embed`}
+          src={`https://maps.google.com/maps?q=${venue.location.zip},${venue.location.address}&hl=en&z=14&output=embed`}
           width="70%"
           height="400"
           frameBorder="0"

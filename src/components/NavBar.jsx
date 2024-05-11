@@ -61,7 +61,7 @@ export default function NavBar({ setUser }) {
       <img src="/assets/LOGO.png" width={250} height={150} alt="Logo" />
       {user ? (
         <div className='flex gap-5'>
-          <Link to={"/profile/edit"}>
+          <Link to={"/user/venues"}>
             <button className='rounded-full w-52'>{user.name}</button>
           </Link>
           <Link to={`/CreateVenues`} title="Create Venue">
