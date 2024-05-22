@@ -15,7 +15,7 @@ export default function GetAllVenues() {
   const isInView = useInView(ref, { amount: 0.5 });
   const [venues, setVenues] = useState([]);
   const [Filteredvenues, setFilteredVenues] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage,] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
 
 

@@ -5,7 +5,7 @@ import Modal from "./modal";
 
 export default function FilterVenues({ venues, setVenues }) {
   const [isActive, setIsActive] = useState(false);
-  const [filteredVenues, setFilteredVenues] = useState([]);
+  const [, setFilteredVenues] = useState([]);
   const FilteringModal = {
     open: {
       width: "100%",

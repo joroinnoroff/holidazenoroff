@@ -5,7 +5,7 @@ export default function UserProfile() {
   const [user, updateUser] = useState(null);
   const [avatarUrl, setAvatarUrl] = useState('');
   const [showAvatarInput, setShowAvatarInput] = useState(false);
-  const [isVenueManager, setIsVenueManager] = useState(false)
+  const [isVenueManager, setIsVenueManager] = useState(false);
 
   useEffect(() => {
     const accessToken = localStorage.getItem('accessToken');
@@ -34,18 +34,12 @@ export default function UserProfile() {
       const userProfileData = await response.json();
       updateUser(userProfileData);
       setAvatarUrl(userProfileData.avatar || '');
+      setIsVenueManager(userProfileData.venueManager); // Set the initial state of isVenueManager
       console.log(userProfileData);
     } catch (error) {
       console.error('Error fetching user profile:', error);
     }
   };
-
-  const handleSignOut = () => {
-    localStorage.removeItem('accessToken');
-    updateUser(null);
-  };
-
-
 
   const handleAvatarSubmit = async (e) => {
     e.preventDefault();
@@ -114,7 +108,6 @@ export default function UserProfile() {
     }
   };
 
-
   return (
     <div className="h-full w-full p-4">
       {user ? (
@@ -137,7 +130,7 @@ export default function UserProfile() {
               <input
                 type="checkbox"
                 id="VenueManagerCheckbox"
-
+                checked={isVenueManager} // Use the state to control the checkbox
                 onChange={handleVenueManagerChange}
               />
               <label htmlFor="VenueManagerCheckbox">Wanna create Venues?</label>
@@ -168,21 +161,13 @@ export default function UserProfile() {
                   required
                 />
                 <button type="submit">Update Avatar</button>
-
               </div>
             </form>
           )}
-
-
-
-
-
-          {/* Add additional user details and logic here */}
         </div>
       ) : (
         <div>No user data available</div>
       )}
-
     </div>
   );
 }

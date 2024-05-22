@@ -1,9 +1,9 @@
-import { CarFront, PawPrint, Settings, Star, Users, Utensils, Wifi } from "lucide-react";
+import { CarFront, PawPrint, Star, Users, Utensils, Wifi } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 
-import { useParams, Link } from "react-router-dom";
-import { toast, Toaster } from "sonner";
+import { useParams } from "react-router-dom";
+import { Toaster } from "sonner";
 import DatePicker from "./components/Calendar";
 
 export default function VenuesID({ user }) {
@@ -11,12 +11,6 @@ export default function VenuesID({ user }) {
   const { id } = useParams();
   const [venue, setVenue] = useState(null);
   const [selectedMedia, setSelectedMedia] = useState(0);
-  const [formData, setFormData] = useState({
-    id: id,
-    dateTo: "",
-    dateFrom: "",
-    guests: 0
-  });
 
 
 
@@ -50,58 +44,7 @@ export default function VenuesID({ user }) {
     fetchVenue();
   }, [id]);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault(); // Prevent default form submission behavior
 
-    try {
-      const accessToken = localStorage.getItem("accessToken");
-      if (!accessToken) {
-        throw new Error("Access token not found");
-      }
-
-      // Access form data from state
-      const { id, dateFrom, dateTo, guests } = formData;
-
-      // Perform any necessary validation here
-
-      // Create request body
-      const requestBody = {
-        venueId: id,
-        dateFrom: dateFrom,
-        dateTo: dateTo,
-        guests: guests
-      };
-
-      const response = await fetch("https://nf-api.onrender.com/api/v1/holidaze/bookings?_customer=true&_venue=true", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${accessToken}` // Include Authorization header
-        },
-        body: JSON.stringify(requestBody),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to create booking");
-      }
-
-      toast.success(`Booking ${venue.name} successful`);
-      console.log("Form Data:", formData);
-
-      // Reset form data after successful submission (optional)
-      setFormData({
-        id: venue.id,
-        dateTo: "",
-        dateFrom: "",
-        guests: 0
-      });
-
-      // Optionally, handle success response here
-    } catch (error) {
-      console.error("Error submitting form:", error);
-      // Optionally, handle error here
-    }
-  };
 
   // Function to handle click on media thumbnails
   const handleMediaClick = (index) => {

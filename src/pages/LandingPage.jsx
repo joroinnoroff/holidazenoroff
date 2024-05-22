@@ -1,20 +1,19 @@
 import { useEffect, useRef, useState } from 'react';
 import About from './About';
 import style from './LandingStyle/style.module.css';
-import { motion, useAnimation, useInView, useIsPresent } from 'framer-motion';
+import { motion, useAnimation } from 'framer-motion';
 import ListVenue from '../components/AboutVenue';
-import gsap from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { ScrollToPlugin } from 'gsap/ScrollToPlugin';
+
 
 export default function LandingPage() {
-  const [isLoading, setIsLoading] = useState(true);
+
   const controls = useAnimation();
   const textRef = useRef(null);
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
 
-  const ref = useRef(null);
-  const isInView = useInView(ref, { once: true })
+  const words = 'HOLIDAZE';
+
+  const differentWords = ['Venues', 'Memories', 'Connections', 'friendships', 'Experiences']
 
   useEffect(() => {
     // Function to randomize the initial position of each letter
@@ -67,12 +66,11 @@ export default function LandingPage() {
     }, 2000); // Change the interval as needed
 
     return () => clearInterval(interval);
-  }, []);
+  }, [differentWords.length]);
 
 
-  const words = 'HOLIDAZE';
 
-  const differentWords = ['Venues', 'Memories', 'Connections', 'friendships', 'Experiences']
+
 
 
   return (

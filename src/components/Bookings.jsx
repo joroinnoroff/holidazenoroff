@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default function UsersBookings() {
   const [bookings, setBookings] = useState([]);
-  const id = useSearchParams();
+
 
   useEffect(() => {
     const fetchData = async () => {

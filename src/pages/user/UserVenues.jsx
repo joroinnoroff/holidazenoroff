@@ -1,12 +1,12 @@
 import { PlusIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import UsersBookings from '../../components/Bookings';
 
 export default function UserVenues() {
   const [venues, setVenues] = useState([]);
   const [showBookings, setShowBookings] = useState(false); // State to toggle between venues and bookings
-  const id = useSearchParams();
+
 
   useEffect(() => {
     const fetchData = async () => {

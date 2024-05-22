@@ -1,13 +1,13 @@
 import style from './LandingStyle/style.module.css'
-import { useEffect, useRef } from 'react';
+import { useRef } from 'react';
 import Lottie from 'lottie-react'
-import { motion, useInView, useAnimation } from 'framer-motion'
+import { motion, useInView } from 'framer-motion'
 import ContractAni from '../../src/animations/house2.json'
-import { perspective } from '../animations/anim';
+
 import { Globe, Handshake, LockIcon } from 'lucide-react';
 
 export default function About() {
-  const mainControls = useAnimation();
+
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.5 });
 
@@ -15,15 +15,9 @@ export default function About() {
 
 
 
-  const aboutVariant = {
-    hidden: { opacity: 0, x: '-100%' },
-    visible: { opacity: 1, x: 0, transition: { duration: 1 } }
-  };
 
-  const TextVariant = {
-    hidden: { opacity: 0, x: '100%' },
-    visible: { opacity: 1, x: 0, transition: { duration: 1 } }
-  };
+
+
 
   const defaultAnimations = {
     hidden: {

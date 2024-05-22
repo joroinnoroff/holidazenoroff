@@ -1,12 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { motion, useAnimation, useInView } from 'framer-motion';
+import React, { useRef } from 'react';
+import { motion, useInView } from 'framer-motion';
 import style from '../pages/LandingStyle/style.module.css';
 import GraphAni from '../../src/animations/graph.json';
-import Lottie, { useLottieInteractivity } from 'lottie-react';
-import { slideIn } from '../animations/anim';
+import Lottie from 'lottie-react';
+
 export default function ListVenue() {
 
-  const controls = useAnimation();
+
   const ref = useRef()
   const isInView = useInView(ref, { amount: 0.5 })
 

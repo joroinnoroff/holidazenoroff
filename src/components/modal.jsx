@@ -3,42 +3,15 @@ import { Globe } from 'lucide-react';
 import { useState } from 'react';
 import { cn } from '../lib/utils';
 import { perspective, slideIn } from "../animations/anim";
-import { Link } from 'react-router-dom';
+
 
 export default function Modal({ isActive, toggleMenu, venues = [], setFilteredVenues }) {
   const [selectedCountry, setSelectedCountry] = useState(null); // State to track selected country
 
-  const [trackState, setTrackState] = useState(0);
-  const [priceRange, setPriceRange] = useState({ min: 0, max: 1000 });
-  const [location, setLocation] = useState('');
-  const [essentials, setEssentials] = useState({
-    wifi: false,
-    breakfast: false,
-    pets: false
-  });
 
-  // Filtering logic
-  const applyFilters = () => {
-    const filtered = venues.filter(venue => {
-      // Apply price range filter
-      const withinPriceRange =
-        venue.price >= priceRange.min && venue.price <= priceRange.max;
 
-      // Apply location filter
-      const matchesLocation = location ? venue.location === location : true;
 
-      // Apply essentials filters
-      const meetsEssentials =
-        (!essentials.wifi || venue.hasWifi) &&
-        (!essentials.breakfast || venue.hasBreakfast) &&
-        (!essentials.pets || venue.allowPets);
 
-      return withinPriceRange && matchesLocation && meetsEssentials;
-    });
-
-    // Update the filtered venues state
-    setFilteredVenues(filtered);
-  };
 
   // Get unique countries and their counts
   const countryCounts = venues.reduce((acc, venue) => {
@@ -120,7 +93,8 @@ export default function Modal({ isActive, toggleMenu, venues = [], setFilteredVe
         <button className='mt-5' onClick={clearFilter}>Clear filter</button>
 
 
-        <button className='ml-10' ><a href="">Search</a></button>
+        <button className='ml-10' onClick={() => window.location.reload()}>Search</button>
+
       </motion.div>
     </div>
   )

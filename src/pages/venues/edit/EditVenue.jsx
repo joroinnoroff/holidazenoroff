@@ -165,15 +165,15 @@ export default function EditVenue() {
           throw new Error("You are not authorized to edit this venue.");
         }
 
-        setFormData({
-          ...formData,
+        setFormData((prevData) => ({
+          ...prevData,
           name: venueData.name,
           description: venueData.description,
           maxGuests: venueData.maxGuests,
           location: venueData.location,
           media: venueData.media,
           price: venueData.price
-        });
+        }));
 
         setGuestCount(venueData.maxGuests);
       } catch (error) {
@@ -184,6 +184,7 @@ export default function EditVenue() {
 
     fetchData();
   }, [id]);
+
 
   const handleSubmit = async (e) => {
     if (e) {

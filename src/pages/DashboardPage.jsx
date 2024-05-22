@@ -13,7 +13,7 @@ import GetAllvenues from '../components/AllVenues';
 
 export default function DashboardPage() {
   const [venues, setVenues] = useState([]);
-  const [userInfo, setUserInfo] = useState(null);
+  const [, setUserInfo] = useState(null);
 
   useEffect(() => {
     const fetchVenues = async () => {

@@ -1,13 +1,15 @@
-import { MapPin, PlusIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
+
 
 export default function CreateVenues() {
   const [introModal, setIntroModal] = useState(true);
-  const [Essentials, setEssentials] = useState(false);
+
   const [guestCount, setGuestCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const navigate = useNavigate(); // Initialize useNavigate
   const closeModal = () => {
     setIntroModal(false);
   };
@@ -163,7 +165,10 @@ export default function CreateVenues() {
       const responseData = await response.json();
       console.log('Venue created successfully:', responseData);
 
-      toast.success(`venue ${responseData.name} venue created`)
+      toast.success(`venue ${responseData.name} venue created`);
+      setTimeout(() => {
+        navigate("/user/venues");
+      }, 1000);
       // Optionally, you can reset the form data or perform other actions after successful submission
     } catch (error) {
       console.error('Error creating venue:', error);
