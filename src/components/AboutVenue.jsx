@@ -22,7 +22,7 @@ export default function ListVenue() {
     }
   }
   const TextMotion1 = "How it works - CREATER"
-
+  const TextMotion2 = "Step-2"
 
   return (
     <div id="listVenue" className={style.About} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
@@ -39,11 +39,35 @@ export default function ListVenue() {
               <motion.span key={i} variants={defaultAnimations} className={style.Heading2}>{char}</motion.span>
 
             ))}</motion.span>
-          <ul>
-            <li>1. REGISTER AN ACCOUNT</li>
-            <li>2. FIND A VENUE</li>
-            <li>3. SET A DATE</li>
-          </ul>
+
+          <motion.div>
+            <motion.span
+
+              initial="hidden"
+              animate={isInView ? 'visible' : 'hidden'}
+              aria-hidden
+              transition={{ staggerChildren: 0.1, }}
+              ref={ref}
+            >
+              {TextMotion2.split('').map((char, i) => (
+
+                <motion.span key={i} variants={defaultAnimations} className="">{char}</motion.span>
+
+              ))}</motion.span>
+          </motion.div>
+          <motion.div
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            variants={defaultAnimations}
+            transition={{ delay: 0.5 }}>
+            <ul>
+              <li>1. REGISTER AN ACCOUNT - Set to be a venue manager</li>
+              <li>2. CREATE YOUR VENUE</li>
+              <li>3. TELL US ABOUT YOUR PLACE</li>
+              <li>4. LET MILLIONS VIEW AND BOOK YOUR VENUE INSTANTLY</li>
+              <li>5. Create memories</li>
+            </ul>
+          </motion.div>
         </motion.div>
         <motion.div className={style.columnRight}  >
           <Lottie

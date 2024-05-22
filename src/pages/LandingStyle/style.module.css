@@ -31,7 +31,7 @@
 
 .TextOverlay h2 {
   font-size: 2.5vw;
-  font-weight: 600;
+  font-weight: 100;
   color: white;
   text-transform: uppercase;
   /* Example styling for text color */
@@ -115,7 +115,7 @@
   width: 129px;
   height: 129px;
   border-radius: 50%;
-  background-image: linear-gradient(45deg, rgba(100, 79, 235, 0.645) 0%, rgba(51, 97, 237, 0.775) 80%, rgba(191, 33, 98, 25) 100%);
+  background-image: linear-gradient(45deg, rgba(0, 166, 255, 0.645) 0%, rgba(61, 145, 221, 0.5) 80%, rgba(191, 33, 98, 25) 100%);
 }
 
 .Holder {

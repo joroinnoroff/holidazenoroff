@@ -1,10 +1,10 @@
-import { MapPin } from "lucide-react";
-import React, { useState } from "react";
+import { MapPin, PlusIcon } from "lucide-react";
+import React, { useState, useEffect } from "react";
 import { toast, Toaster } from "sonner";
 
 export default function CreateVenues() {
   const [introModal, setIntroModal] = useState(true);
-
+  const [Essentials, setEssentials] = useState(false);
   const [guestCount, setGuestCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -14,7 +14,7 @@ export default function CreateVenues() {
   const [formData, setFormData] = useState({
     name: "",
     description: "",
-    media: ["",],
+    media: ["", "",],
     price: 0,
     maxGuests: guestCount,
     rating: 0,
@@ -34,7 +34,6 @@ export default function CreateVenues() {
       lng: 0,
     },
   });
-  // Function to add a new media input field
   const addMediaInput = () => {
     setFormData((prevData) => ({
       ...prevData,
@@ -46,9 +45,7 @@ export default function CreateVenues() {
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
 
-    console.log("Checkbox checked:", checked); // Log the checked value
-
-    if (type === 'checkbox') {
+    if (type === "checkbox") {
       setFormData((prevData) => ({
         ...prevData,
         meta: {
@@ -65,12 +62,11 @@ export default function CreateVenues() {
           [locationField]: value,
         },
       }));
-    } else if (name === 'price') {
-      // Parse the price value as a number
+    } else if (name === "price") {
       const price = parseFloat(value);
       setFormData((prevData) => ({
         ...prevData,
-        price: isNaN(price) ? 0 : price, // Set price to 0 if parsing fails
+        price: isNaN(price) ? 0 : price,
       }));
     } else {
       setFormData((prevData) => ({
@@ -78,11 +74,11 @@ export default function CreateVenues() {
         [name]: value,
       }));
     }
-
-    console.log(formData); // Log the updated formData
   };
 
-
+  useEffect(() => {
+    console.log(formData); // Logging the formData for debugging
+  }, [formData]); // Add useEffect to log formData when it changes
 
 
 
@@ -112,6 +108,7 @@ export default function CreateVenues() {
       '(\\#[-a-z\\d_]*)?$', 'i'); // fragment locator
     return !!urlPattern.test(url);
   };
+
 
 
   const increaseGuestCount = () => {
@@ -155,7 +152,9 @@ export default function CreateVenues() {
           'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify(formData), // Convert formData to JSON string
+
       });
+
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -231,12 +230,12 @@ export default function CreateVenues() {
                     <div className="absolute inset-y-0 start-0 flex items-center justify-center ps-3.5 pointer-events-none">
                       <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M13 2h2v2h1v19h1v-15l6 3v12h1v1h-24v-1h1v-11h7v11h1v-19h1v-2h2v-2h1v2zm8 21v-2h-2v2h2zm-15 0v-2h-3v2h3zm8 0v-2h-3v2h3zm-2-4v-13h-1v13h1zm9 0v-1h-2v1h2zm-18 0v-2h-1v2h1zm4 0v-2h-1v2h1zm-2 0v-2h-1v2h1zm9 0v-13h-1v13h1zm7-2v-1h-2v1h2zm-18-1v-2h-1v2h1zm2 0v-2h-1v2h1zm2 0v-2h-1v2h1zm14-1v-1h-2v1h2zm0-2.139v-1h-2v1h2z" /></svg>
                     </div>
-                    <input type="name" name='name' className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleChange} placeholder='Cabin by the lake... Apartment in the' required
+                    <input type="name" name='name' className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleChange} placeholder='Cabin by the lake... Apartment in the city..' required
                       value={formData.name}
                     />
                   </div>
                   <p className="text-2xl font-bold">Get started</p>
-                  <h2 className="opacity-65 text-balance text-lg my-3">1 Share some basic info, like where it is and how many guests can stay.</h2>
+                  <h2 className="opacity-65 text-balance text-lg my-3">Share some basic info, like where it is and how many guests can stay.</h2>
                   <textarea
                     name="description"
                     value={formData.description}
@@ -282,7 +281,7 @@ export default function CreateVenues() {
                   </div>
                 </div>
                 <h2 className="text-lg font-semibold my-5">Essentials:</h2>
-                <div className="flex items-center gap-10 ">
+                <div className="flex items-center gap-10">
                   <div className="flex items-center gap-2">
                     <input
                       type="checkbox"
@@ -292,26 +291,45 @@ export default function CreateVenues() {
                       checked={formData.meta.wifi}
                       onChange={handleChange}
                     />
-
-                    <label htmlFor="Wifi">Wifi</label>
+                    <label htmlFor="wifi">Wifi</label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input type="checkbox"
+                    <input
+                      type="checkbox"
                       name="breakfast"
                       id="breakfast"
                       className="h-4 w-4"
                       checked={formData.meta.breakfast}
-                      onChange={handleChange} />
+                      onChange={handleChange}
+                    />
                     <label htmlFor="breakfast">Breakfast</label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" name="" id="" className="h-4 w-4" />
+                    <input
+                      type="checkbox"
+                      name="pets"
+                      id="pets"
+                      className="h-4 w-4"
+                      checked={formData.meta.pets}
+                      onChange={handleChange}
+                    />
                     <label htmlFor="pets">Pets</label>
                   </div>
                   <div className="flex items-center gap-2">
-                    <input type="checkbox" name="" id="" className="h-4 w-4" />
+                    <input
+                      type="checkbox"
+                      name="parking"
+                      id="parking"
+                      className="h-4 w-4"
+                      checked={formData.meta.parking}
+                      onChange={handleChange}
+                    />
                     <label htmlFor="parking">Parking</label>
                   </div>
+
+
+
+
                 </div>
                 <div className="flex gap-5">
                   {currentPage > 1 && <button onClick={handlePrevClick}>Back</button>}
@@ -334,19 +352,27 @@ export default function CreateVenues() {
                   ))}
                 </div>
                 <p className="opacity-65 text-lg my-3">Copy and paste your image url</p>
-                <div className="w-4/5 my-5">
+                <div className="flex flex-wrap gap-2">
                   {formData.media.map((url, index) => (
-                    <input
-                      key={index}
-                      type="url"
-                      name={`media-${index}`}
-                      value={url}
-                      onChange={(e) => handleMediaChange(index, e.target.value)}
-                      className="w-42"
-                      placeholder={`Image ${index + 1}`}
-                    />
+                    <div key={index} className="flex items-center">
+                      <input
+                        type="url"
+                        name={`media-${index}`}
+                        value={url}
+                        onChange={(e) => handleMediaChange(index, e.target.value)}
+                        className="border w-64 p-2 rounded"
+                        placeholder={`Image ${index + 1}`}
+                      />
+                      {index === formData.media.length - 1 && ( // Render the "plus" button next to the last input field
+                        <button onClick={addMediaInput} className="rounded-full w-12 h-12 flex items-center">
+                          <PlusIcon />
+                        </button>
+                      )}
+                    </div>
                   ))}
                 </div>
+
+
 
                 <div>
                   <h2>Set a price</h2>
@@ -367,6 +393,8 @@ export default function CreateVenues() {
                 <div className="flex items-center my-5">
                   <span className="text-black opacity-65">Location: <input type="text" name="location.country" className="bg-gray-50 border text-sm md:text-2xl w-3/4 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block border-none ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded" onChange={handleChange} placeholder={formData.location.country} value={formData.location.country} /></span>
                   <span className="text-black opacity-65">City:                   <input type="text" name="location.city" id="city" className="bg-gray-50 border text-sm md:text-2xl w-3/4 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block border-none ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded" placeholder={formData.location.city} onChange={handleChange} value={formData.location.city} /></span>
+                  <span className="text-black opacity-65">Zip:          <input type="text" name="location.zip" id="zip" className="border w-3/4 p-2 rounded" placeholder="Enter your Zip" onChange={handleChange} value={formData.location.zip} />                    </span>
+
                 </div>
                 <p> Maximum amount of people: {formData.maxGuests} </p>
                 <div className="flex gap-2 flex-wrap my-5">
@@ -399,6 +427,40 @@ export default function CreateVenues() {
                   placeholder={formData.description}
                 ></textarea>
 
+                <p>Essentials</p>
+                <div>
+                  {formData.meta.wifi ? (
+                    <div>The venue does have Wifi</div>
+                  ) : (
+                    <div>The venue does not have Wifi</div>
+                  )}
+                </div>
+
+                <div>
+                  {formData.meta.breakfast ? (
+                    <div>Breakfast is included</div>
+                  ) : (
+                    <div>Breakfast is not included</div>
+                  )}
+                </div>
+
+                <div>
+                  {formData.meta.pets ? (
+                    <div>Pets are allowed</div>
+                  ) : (
+                    <div>Pets are not allowed</div>
+                  )}
+                </div>
+
+                <div>
+                  {formData.meta.parking ? (
+                    <div>Parking space is included</div>
+                  ) : (
+                    <div>Parking space is not included</div>
+                  )}
+                </div>
+
+
                 <div className="flex gap-5 items-center mb-5">
                   {currentPage > 3 && <div onClick={handlePrevClick}>Back</div>}
                   <button type="submit" className="rounded-full hover:shadow-xl transition-all">Create venue</button>
@@ -411,7 +473,7 @@ export default function CreateVenues() {
 
           </div>
         </form>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 }

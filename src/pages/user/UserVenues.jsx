@@ -1,3 +1,4 @@
+import { PlusIcon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import UsersBookings from '../../components/Bookings';
@@ -40,42 +41,62 @@ export default function UserVenues() {
   return (
     <div className="p-5 md:w-3/4 m-auto">
       <button
-        className={`rounded ${!showBookings ? '' : 'bg-gray-400'}`}
+        className={`rounded hover:opacity-90 transition-all hover:shadow-md ${!showBookings ? '' : 'bg-gray-400'}`}
         onClick={() => setShowBookings(false)}
       >
         Users Venues
       </button>
       <button
-        className={`ml-5 rounded ${showBookings ? '' : 'bg-gray-400'}`}
+        className={`ml-5 rounded hover:opacity-90 transition-all hover:shadow-md ${showBookings ? '' : 'bg-gray-400'}`}
         onClick={() => setShowBookings(true)}
       >
         Users bookings
       </button>
+
+
+      <Link
+        to={"/user"}
+        className={`ml-5 hover:opacity-90 transition-all hover:shadow-md rounded bg-gray-400 p-4 text-white`}
+        onClick={() => setShowBookings(true)}
+      >
+        User Profile      </Link>
       <div className="w-full h-full mt-5">
         {showBookings ? (
-          <div className='' >
-            <h1 className='text-3xl'>Upcoming reservations</h1>
+          <div>
+            <h1 className="text-3xl">Upcoming reservations</h1>
             <UsersBookings />
           </div>
         ) : (
           <div className="flex flex-col gap-10 justify-between">
-            <h1 className='text-3xl'>Your venues</h1>
-            {venues.map((venue) => (
-              <div className=" border shadow-lg p-2 rounded-xl" key={venue.id}>
-                <h2 className="font-extralight text-xl">{venue.name} </h2>
-                <Link to={`/venues/edit/${venue.id}`}>
-                  <span className="text-xs">Edit Venue</span>
-                </Link>
-                <div className="flex gap-10 items-center justify-end">
-
-                  <img src={venue.media[0]} alt="" className='w-52' />
-                </div>
-
+            <h1 className="text-3xl">Your venues</h1>
+            {venues.length === 0 ? (
+              <div>
+                <p>You have not created any venues yet, get started with clicking here</p>
+                <Link to={"/Createvenues"}><button className='rounded-full flex items-center hover:opacity-90 transition-all hover:shadow-md mt-5'>Create venue<PlusIcon strokeWidth={1.25} /></button></Link>
               </div>
-            ))}
+            ) : (
+              <div className="flex flex-col gap-10 justify-between">
+                {venues.map((venue) => (
+                  <div className="border shadow-lg p-2 rounded-xl" key={venue.id}>
+                    <h2 className="font-extralight text-xl">{venue.name}</h2>
+                    <Link to={`/venues/edit/${venue.id}`}>
+                      <span className="text-xs">Edit Venue</span>
+                    </Link>
+                    <div className="flex gap-10 items-center justify-end">
+                      <img src={venue.media[0]} alt="" className="w-52" />
+                    </div>
+                    <div className="flex flex-col">
+                      <span>{venue.location.country}</span>
+                      <span>{venue.location.address}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         )}
       </div>
     </div>
   );
+
 }

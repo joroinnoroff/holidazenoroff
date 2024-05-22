@@ -34,7 +34,7 @@ export default function About() {
     }
   }
   const TextMotion1 = "How it works - RENTER"
-  const TextMotion2 = "How it works - RENTER"
+  const TextMotion2 = "Step-1"
   return (
     <motion.div
       className={style.About}
@@ -69,14 +69,36 @@ export default function About() {
 
             ))}</motion.span>
 
-          <p className='opacity-65'>We strive to be easy and give you the best deals out there! Book your journey today</p>
-          <ul>
-            <li>1. REGISTER AN ACCOUNT</li>
-            <li>2. FIND A VENUE</li>
-            <li>3. SET A DATE</li>
-            <li>4. Easy overview and Booking conformation instantly</li>
-            <li>5. Create memories</li>
-          </ul>
+          <motion.div>
+            <motion.span
+
+              initial="hidden"
+              animate={isInView ? 'visible' : 'hidden'}
+              aria-hidden
+              transition={{ staggerChildren: 0.1, }}
+              ref={ref}
+            >
+              {TextMotion2.split('').map((char, i) => (
+
+                <motion.span key={i} variants={defaultAnimations} className="">{char}</motion.span>
+
+              ))}</motion.span>
+          </motion.div>
+
+          <p className='opacity-65'>We strive to be easy and give you the best deals out there. Book your vaction today!</p>
+          <motion.div
+            initial="hidden"
+            animate={isInView ? 'visible' : 'hidden'}
+            variants={defaultAnimations}
+            transition={{ delay: 0.5 }}>
+            <ul>
+              <li>1. REGISTER AN ACCOUNT</li>
+              <li>2. FIND YOUR VENUE</li>
+              <li>3. SET A DATE AND HOW MANY PEOPLE</li>
+              <li>4. Easy overview and Booking conformation instantly</li>
+              <li>5. Create memories</li>
+            </ul>
+          </motion.div>
 
 
           <div className={style.CircleCon}>

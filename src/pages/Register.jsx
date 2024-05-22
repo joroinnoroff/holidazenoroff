@@ -106,7 +106,7 @@ export default function RegisterPage() {
           <div className='flex flex-row'>
             <input type="checkbox" name="venueManager" onChange={handleChange} />
             <span>Yes</span>
-            <input type="checkbox" name="No" onChange={handleChange} />
+            <input type="checkbox" name="No" />
             <span>No</span>
           </div>
         </div>

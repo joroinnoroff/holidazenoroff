@@ -1,26 +1,25 @@
 import { MapPinIcon, Star, Users } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
-import { cn } from "../lib/utils";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Scrollbar, A11y } from 'swiper/modules';
 import { Pagination as PaginationSwiper } from "swiper/modules";
 import 'swiper/swiper-bundle.css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationPrevious, PaginationNext, PaginationEllipsis } from "../_components/ui/pagination";
 import { motion, useInView } from 'framer-motion';
 import FilterVenues from "./FilterVenues";
 
-// Inside your component
-export default function GetAllvenues() {
+export default function GetAllVenues() {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.5 });
   const [venues, setVenues] = useState([]);
   const [Filteredvenues, setFilteredVenues] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
-  const venuesPerPage = 6; // Changed to 6 venues per page
-  const pagesToShow = 3; // Number of pages to show in the pagination
+  const [searchQuery, setSearchQuery] = useState('');
+
+
+
   useEffect(() => {
     const fetchVenues = async () => {
       try {
@@ -29,22 +28,16 @@ export default function GetAllvenues() {
           throw new Error("Access token not found");
         }
 
-
         const queryParams = new URLSearchParams(window.location.search);
-
-
         const countryFilter = queryParams.get('country');
 
         // Construct URL with filters and sorting
-        let url = 'https://nf-api.onrender.com/api/v1/holidaze/venues';
+        let url = 'https://nf-api.onrender.com/api/v1/holidaze/venues?_sort=created:desc';
         let params = [];
 
         if (params.length > 0) {
           url += '?' + params.join('&');
         }
-
-        // Add sorting by price
-        url += '?_sortOrder=asc';
 
         const response = await fetch(url, {
           method: 'GET',
@@ -74,8 +67,12 @@ export default function GetAllvenues() {
         } else {
           filteredVenues = sortedVenues; // If no country filter, use all venues
         }
+        // Sort by creation date (ensure sorting by 'created' property is in descending order)
+        filteredVenues.sort((a, b) => new Date(b.created) - new Date(a.created));
+
 
         setVenues(filteredVenues);
+        setFilteredVenues(filteredVenues); // Initialize Filteredvenues with all venues
       } catch (error) {
         console.error("Error fetching venues:", error);
       }
@@ -84,40 +81,50 @@ export default function GetAllvenues() {
     fetchVenues();
   }, [currentPage]);
 
-
-
-  // Change page
-  const paginate = (pageNumber) => setCurrentPage(pageNumber);
-
-  // Calculate start and end index for the current page
-  const startIndex = (currentPage - 1) * venuesPerPage;
-  const endIndex = startIndex + venuesPerPage;
-
-  const defaultAnimations = {
-    hidden: {
-      opacity: 0
-    },
-    visible: {
-      opacity: 1,
-      Bounce: 0.5
-    }
-  }
+  useEffect(() => {
+    const lowercasedFilter = searchQuery.toLowerCase();
+    const filteredData = venues.filter(item => {
+      return (
+        item.name.toLowerCase().includes(lowercasedFilter) ||
+        item.location.country.toLowerCase().includes(lowercasedFilter) ||
+        item.price.toString().includes(lowercasedFilter)
+      );
+    });
+    setFilteredVenues(filteredData);
+  }, [searchQuery, venues]);
 
   return (
     <div className="container mx-auto py-8">
+      <h1 className="text-6xl my-8">All venues</h1>
       <div>
         <FilterVenues setVenues={setVenues} venues={venues} />
+        <div className="flex justify-between items-center">
+          <div className="hidden lg:flex space-x-5">
+            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Lowest to highest $</Link>
+            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Lowest to highest rating</Link>
+            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Most amount of people</Link>
+            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Least amount of people</Link>
+          </div>
+          <div className="flex flex-col">
+            <input
+              type="text"
+              placeholder="Search for Venues.."
+              className="rounded-full"
+              id="SearchVenues"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+            <span className="text-xs items-end justify-end flex p-2">Amount of venues: {Filteredvenues.length}</span>
+          </div>
+        </div>
       </div>
-      <motion.div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-5"
-      >
-        {venues.slice(startIndex, endIndex).map((venue, index) => (
+      <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 my-5">
+        {Filteredvenues.map((venue, index) => (
           <motion.div
             key={index}
             className="flex flex-col"
             initial="hidden"
             animate={isInView ? 'visible' : 'hidden'}
-            aria-hidden
             transition={{ staggerChildren: 0.1 }}
             ref={ref}
           >
@@ -126,15 +133,11 @@ export default function GetAllvenues() {
                 <Swiper
                   className="h-48 md:h-64"
                   spaceBetween={0}
-                  loopedslides={"true"}
-                  slidesPerView={1} // Change this to 2
-                  centeredSlides={true} // Center the active slide
-                  onSlideChange={() => console.log('slide change')}
-                  onSwiper={(swiper) => console.log(swiper)}
-                  navigation={true} // Add navigation
+                  slidesPerView={1}
+                  centeredSlides={true}
+                  navigation={true}
                   pagination={true}
-
-                  modules={[Navigation, Scrollbar, Pagination, A11y]}
+                  modules={[Navigation, Scrollbar, PaginationSwiper, A11y]}
                 >
                   {venue.media.map((image, imageIndex) => (
                     <SwiperSlide key={imageIndex}>
@@ -151,61 +154,30 @@ export default function GetAllvenues() {
               )}
             </Link>
             <div className="flex justify-between mt-4">
-              <div className="flex flex-col">
-                <h2 className="text-lg font-extralight">{venue.name}</h2>
-
+              <div className="flex flex-col items-start gap-1 justify-start">
+                <h2 className="text-lg">{venue.name}</h2>
                 <div className="flex">
-                  <span className="flex"><MapPinIcon strokeWidth={1} />{venue.location.country}</span>
+                  <span className="flex items-center text-sm opacity-65"><MapPinIcon strokeWidth={1} />{venue.location.country}</span>
                 </div>
-
-                <span className="text-gray-600 ml-2">${venue.price}</span>
+                <span className="text-gray-600 ml-2 font-extralight">From ${venue.price} per night</span>
               </div>
-              <div className="flex items-center flex-col  ">
-                {venue.rating >= 4 && (
+              <div className="flex items-center flex-col">
+                {venue.rating >= 4 ? (
                   <p className="text-gray-600 flex items-center flex-row">
                     <Star strokeWidth={1.25} />
                     {venue.rating}
                   </p>
+                ) : (
+                  <p className="text-gray-600 flex items-center flex-row text-xs">
+                    New   <Star strokeWidth={1.25} />
+                  </p>
                 )}
-                <Users />
-                {/* You can adjust the styling of the Users component if necessary */}
+                <Users strokeWidth={1.25} />
               </div>
             </div>
           </motion.div>
         ))}
       </motion.div>
-      {/* Pagination */}
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              onClick={() => setCurrentPage((prevPage) => Math.max(prevPage - 1, 1))}
-            >
-              Previous
-            </PaginationPrevious>
-          </PaginationItem>
-          {Array.from({ length: Math.min(pagesToShow, Math.ceil(venues.length / venuesPerPage)) }, (_, i) => {
-            const pageNumber = currentPage - Math.floor(pagesToShow / 2) + i;
-            return (
-              pageNumber >= 1 && pageNumber <= Math.ceil(venues.length / venuesPerPage) && (
-                <PaginationItem key={i}  >
-                  <PaginationLink onClick={() => paginate(pageNumber)} className={cn({ 'border': pageNumber === currentPage, 'bg-gray-200': pageNumber !== currentPage }, 'hover:bg-gray-200')}>
-                    {pageNumber}
-                  </PaginationLink>
-                </PaginationItem>
-              )
-            );
-          })}
-          {currentPage < Math.ceil(venues.length / venuesPerPage) - pagesToShow + 1 && <PaginationEllipsis />}
-          <PaginationItem>
-            <PaginationNext
-              onClick={() => setCurrentPage((prevPage) => Math.min(prevPage + 1, Math.ceil(venues.length / venuesPerPage)))}
-            >
-              Next
-            </PaginationNext>
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
     </div>
   );
 }

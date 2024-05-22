@@ -23,7 +23,7 @@ export default function DashboardPage() {
           throw new Error('Access token not found');
         }
 
-        const url = 'https://nf-api.onrender.com/api/v1/holidaze/venues?_limit=10&_sortOrder';
+        const url = 'https://nf-api.onrender.com/api/v1/holidaze/venues?_&_sortOrder=desc';
         const response = await fetch(url, {
           method: 'GET',
           headers: {
@@ -58,7 +58,7 @@ export default function DashboardPage() {
         <GetAllvenues />
 
 
-        <h1>Top Rated</h1>
+        <h2>Top Rated</h2>
       </div>
       <Swiper
         spaceBetween={0}

@@ -44,28 +44,35 @@ export default function UsersBookings() {
   };
 
   return (
-    <div className='p-5 md:w-3/4 m-auto'>
+    <div className=' m-auto'>
       <div className='w-full h-full mt-5'>
-        <div className='flex flex-col gap-10 justify-between'>
-          {bookings.map((item) => (
-            <div className=' border shadow-lg p-2 rounded-xl' key={item.id}>
-              <h1 className='font-extralight text-xl'>{item.venue.name}</h1>
-
-              <p className='font-extralight'>Check in <span>{formatDate(item.dateFrom)}</span></p>
-              <p className='font-extralight'>Check out <span>{formatDate(item.dateTo)}</span></p>
-              <p>Guests: {item.guests}</p>
-              <Link to={`/bookings/create/${item.id}`}>
-                <span className='text-xs'>View Venue</span>
-              </Link>
-              <Link to={`/venues/edit/${item.id}`}>
-                <span className='text-xs'>Edit Booking</span>
-              </Link>
-              <div className='flex gap-10 items-end justify-end'>
-                <img src={item.venue.media[0]} alt="" className='w-72 h-full rounded' />
+        {bookings.length === 0 ? (
+          <p className='m-0'>You have no bookings yet</p>
+        ) : (
+          <div className='flex flex-col gap-10 justify-between'>
+            {bookings.map((item) => (
+              <div className='border shadow-lg p-2 rounded-xl' key={item.id}>
+                <h1 className='font-extralight text-xl'>{item.venue.name}</h1>
+                <p className='font-extralight'>
+                  Check in <span>{formatDate(item.dateFrom)}</span>
+                </p>
+                <p className='font-extralight'>
+                  Check out <span>{formatDate(item.dateTo)}</span>
+                </p>
+                <p>Guests: {item.guests}</p>
+                <Link to={`/bookings/create/${item.id}`}>
+                  <span className='text-xs'>View Venue</span>
+                </Link>
+                <Link to={`/venues/edit/${item.id}`}>
+                  <span className='text-xs'>Edit Booking</span>
+                </Link>
+                <div className='flex gap-10 items-end justify-end'>
+                  <img src={item.venue.media[0]} alt="" className='w-72 h-full rounded' />
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

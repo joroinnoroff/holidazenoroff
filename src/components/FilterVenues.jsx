@@ -19,8 +19,8 @@ export default function FilterVenues({ venues, setVenues }) {
     closed: {
       width: "100px",
       height: "40px",
-      top: "250px",
-      left: "20px",
+      top: "260px",
+      left: "90%",
       transition: { duration: 0.75, delay: 0.35, type: "tween", ease: [0.76, 0, 0.24, 1] }
     }
   };
@@ -44,7 +44,7 @@ export default function FilterVenues({ venues, setVenues }) {
           className="py-3 px-3 border w-50 mb-3 flex rounded-full gap-2 "
           onClick={() => setIsActive(!isActive)} // Toggle isActive state on button click
         >
-          <SlidersHorizontal />
+          <SlidersHorizontal strokeWidth={1.25} />
         </button>
       )}
 

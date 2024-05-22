@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './globals.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+<script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/datepicker.min.js"></script>
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(

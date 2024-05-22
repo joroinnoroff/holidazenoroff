@@ -10,6 +10,7 @@ import VenuesID from './pages/venues/[id]';
 import CreateVenues from './pages/CreateVenues';
 import EditVenue from './pages/venues/edit/EditVenue';
 import UserVenues from './pages/user/UserVenues';
+import UserProfile from './pages/user/UserProfile';
 
 
 function App() {
@@ -23,18 +24,12 @@ function App() {
         <Routes>
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route
-            path="/dashboard"
-            element={<DashboardPage setVenues={setVenues} />}
-          />
+          <Route path="/dashboard" element={<DashboardPage setVenues={setVenues} />} />
           <Route path="/" element={<LandingPage />} />
-          <Route path="/venues/:id" element={<VenuesID />} />
+          <Route path="/venues/:id" element={<VenuesID user={user} />} />
           <Route path="/venues/edit/:id" element={<EditVenue />} />
-          <Route
-            path="/user/venues"
-            element={<UserVenues venues={venues} />}
-          />
-
+          <Route path="/user/venues" element={<UserVenues venues={venues} />} />
+          <Route path="/user" element={<UserProfile venues={venues} setUser={setUser} />} />
           <Route path="/createvenues" element={<CreateVenues />} />
         </Routes>
       </div>

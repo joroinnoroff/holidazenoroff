@@ -1,10 +1,13 @@
 import { CarFront, PawPrint, Settings, Star, Users, Utensils, Wifi } from "lucide-react";
 import React, { useState, useEffect } from "react";
-import Calendar from "react-calendar";
+
+
 import { useParams, Link } from "react-router-dom";
 import { toast, Toaster } from "sonner";
+import DatePicker from "./components/Calendar";
 
-export default function VenuesID() {
+export default function VenuesID({ user }) {
+
   const { id } = useParams();
   const [venue, setVenue] = useState(null);
   const [selectedMedia, setSelectedMedia] = useState(0);
@@ -13,8 +16,7 @@ export default function VenuesID() {
     dateTo: "",
     dateFrom: "",
     guests: 0
-  })
-
+  });
 
 
 
@@ -26,7 +28,7 @@ export default function VenuesID() {
           throw new Error("Access token not found");
         }
 
-        const url = `https://nf-api.onrender.com/api/v1/holidaze/venues/${id}?=true`;
+        const url = `https://nf-api.onrender.com/api/v1/holidaze/venues/${id}?=true&_booking=true&_owner=true`;
         const response = await fetch(url, {
           method: "GET",
           headers: {
@@ -37,8 +39,8 @@ export default function VenuesID() {
         if (!response.ok) {
           throw new Error("Failed to fetch venue");
         }
-
         const venueData = await response.json();
+        console.log(venueData);
         setVenue(venueData);
       } catch (error) {
         console.error("Error fetching venue:", error);
@@ -48,10 +50,6 @@ export default function VenuesID() {
     fetchVenue();
   }, [id]);
 
-  const handleChange = (e) => {
-    const { id, dateFrom, dateTo, guests } = e.target;
-
-  }
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
 
@@ -74,22 +72,20 @@ export default function VenuesID() {
         guests: guests
       };
 
-
       const response = await fetch("https://nf-api.onrender.com/api/v1/holidaze/bookings?_customer=true&_venue=true", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${accessToken}` // Include Authorization header
+          Authorization: `Bearer ${accessToken}` // Include Authorization header
         },
         body: JSON.stringify(requestBody),
       });
-
 
       if (!response.ok) {
         throw new Error("Failed to create booking");
       }
 
-      toast.success(`Booking ${venue.name} successfull`)
+      toast.success(`Booking ${venue.name} successful`);
       console.log("Form Data:", formData);
 
       // Reset form data after successful submission (optional)
@@ -107,8 +103,6 @@ export default function VenuesID() {
     }
   };
 
-
-
   // Function to handle click on media thumbnails
   const handleMediaClick = (index) => {
     setSelectedMedia(index); // Update selectedMedia state with the clicked index
@@ -117,9 +111,6 @@ export default function VenuesID() {
   if (!venue) {
     return <div>Loading...</div>;
   }
-
-
-
 
   return (
     <div className="w-full h-screen mb-20">
@@ -146,10 +137,8 @@ export default function VenuesID() {
           </div>
         </div>
         <div className="flex flex-col gap-5 p-4">
-          <h1 className="text-6xl font-semibold">{venue.name}</h1>
-          <div className="w-2/6">
-            <Link to={`/venues/edit/${id}`}><Settings strokeWidth={1.25} /></Link>
-          </div>
+          <h1 className="text-2xl md:text-6xl font-semibold">{venue.name}</h1>
+
           <h2 className="text-4xl font-extralight">About the venue:</h2>
           <p className="text-balance">{venue.description}</p>
           <div className="flex items-center gap-5">
@@ -163,51 +152,48 @@ export default function VenuesID() {
           <div className="">
             <h3 className="text-xl opacity-65 font-extralight my-3">What this place offers</h3>
             <div className="grid grid-cols-2 gap-4">
-              <div className="flex items-center">
-                <Wifi strokeWidth={1.25} />
-                <span className="ml-2">Wifi</span>
-              </div>
-              <div className="flex items-center">
-                <PawPrint strokeWidth={1.25} />
-                <span className="ml-2">Pets allowed</span>
-              </div>
-              <div className="flex items-center">
-                <Utensils strokeWidth={1.25} />
-                <span className="ml-2">Breakfast included</span>
-              </div>
-              <div className="flex items-center">
-                <CarFront strokeWidth={1.25} />
-                <span className="ml-2">Free parking</span>
-              </div>
+              {venue.meta.wifi && (
+                <div className="flex items-center">
+                  <Wifi strokeWidth={1.25} />
+                  <span className="ml-2">Wifi</span>
+                </div>
+              )}
+
+              {venue.meta.pets && (
+                <div className="flex items-center">
+                  <PawPrint strokeWidth={1.25} />
+                  <span className="ml-2">Pets allowed</span>
+                </div>
+              )}
+
+              {venue.meta.breakfast && (
+                <div className="flex items-center">
+                  <Utensils strokeWidth={1.25} />
+                  <span className="ml-2">Breakfast included</span>
+                </div>
+              )}
+
+              {venue.meta.parking && (
+                <div className="flex items-center">
+                  <CarFront strokeWidth={1.25} />
+                  <span className="ml-2">Free parking</span>
+                </div>
+              )}
             </div>
           </div>
-          <form onSubmit={handleSubmit}>
-            <div className="flex items-center justify-center">
-              <h2>Set a date from</h2>
-              <input
-                type="date"
-                value={formData.dateFrom}
-                onChange={(e) => setFormData({ ...formData, dateFrom: e.target.value })}
-              />
-            </div>
-            <div className="flex items-center justify-center">
-              <h2>Set a date To</h2>
-              <input
-                type="date"
-                value={formData.dateTo}
-                onChange={(e) => setFormData({ ...formData, dateTo: e.target.value })}
-              />
-            </div>
 
-            <h2>How many Guests are coming ?</h2>
-            <input
-              type="number"
-              value={formData.guests}
-              onChange={(e) => setFormData({ ...formData, guests: +e.target.value })}
-            />
+          <div className="flex flex-col justify-around items-start">
 
-            <button type="submit">Submit</button>
-          </form>
+
+
+
+
+
+            <DatePicker id={id} />
+
+
+          </div>
+
 
         </div>
       </div>
@@ -219,8 +205,9 @@ export default function VenuesID() {
         </div>
         <iframe
           src={`https://maps.google.com/maps?q=${venue.location.zip},${venue.location.address}&hl=en&z=14&output=embed`}
-          width="70%"
+          width="100%"
           height="400"
+          title="Map over venue"
           frameBorder="0"
           style={{ border: 0, borderRadius: "5px" }}
           allowFullScreen=""
@@ -231,5 +218,4 @@ export default function VenuesID() {
       </div>
     </div>
   );
-
 }

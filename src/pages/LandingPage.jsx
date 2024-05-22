@@ -72,7 +72,7 @@ export default function LandingPage() {
 
   const words = 'HOLIDAZE';
 
-  const differentWords = ['experiences', 'memories', 'connections', 'friendships']
+  const differentWords = ['Venues', 'Memories', 'Connections', 'friendships', 'Experiences']
 
 
   return (
@@ -87,7 +87,7 @@ export default function LandingPage() {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               color: '#BF0362',
-              fontWeight: 'bold'
+              fontWeight: 'bolder'
             }}>
             {words.split('').map((char, index) => (
               <motion.span
@@ -111,7 +111,7 @@ export default function LandingPage() {
             animate="visible"
             transition={{ duration: 0.5, delay: 0.25 }}
           >
-            <h2>Creating <span className='text-black mx-2'>{differentWords[currentWordIndex]} </span>since 2023</h2>
+            <h2 >Creating <span className='text-black mx-2'>{differentWords[currentWordIndex]} </span>since 2023</h2>
           </motion.div>
         </div>
       </div>
