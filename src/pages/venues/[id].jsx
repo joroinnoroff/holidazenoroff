@@ -1,10 +1,11 @@
-import { CarFront, PawPrint, Star, Users, Utensils, Wifi } from "lucide-react";
+import { CarFront, PawPrint, Settings, Star, Users, Utensils, Wifi } from "lucide-react";
 import React, { useState, useEffect } from "react";
 
 
 import { useParams } from "react-router-dom";
 import { Toaster } from "sonner";
 import DatePicker from "./components/Calendar";
+import { Link } from "react-router-dom";
 
 export default function VenuesID({ user }) {
 
@@ -18,9 +19,7 @@ export default function VenuesID({ user }) {
     const fetchVenue = async () => {
       try {
         const accessToken = localStorage.getItem("accessToken");
-        if (!accessToken) {
-          throw new Error("Access token not found");
-        }
+
 
         const url = `https://nf-api.onrender.com/api/v1/holidaze/venues/${id}?=true&_booking=true&_owner=true`;
         const response = await fetch(url, {
@@ -34,11 +33,14 @@ export default function VenuesID({ user }) {
           throw new Error("Failed to fetch venue");
         }
         const venueData = await response.json();
-        console.log(venueData);
+
+        console.log(venueData.owner.name);
+
         setVenue(venueData);
       } catch (error) {
         console.error("Error fetching venue:", error);
       }
+
     };
 
     fetchVenue();
@@ -79,6 +81,11 @@ export default function VenuesID({ user }) {
           </div>
         </div>
         <div className="flex flex-col gap-5 p-4">
+          {user && user.name === venue.owner.name && (
+            <div>
+              <button className="rounded-full">  <Link to={`/venues/edit/${venue.id}`} title="Edit your venue" className="flex items-center"> <Settings strokeWidth={1.25} /></Link></button>
+            </div>
+          )}
           <h1 className="text-2xl md:text-6xl font-semibold">{venue.name}</h1>
 
           <h2 className="text-4xl font-extralight">About the venue:</h2>
@@ -91,6 +98,8 @@ export default function VenuesID({ user }) {
               <span className="flex items-center gap-1"><Star strokeWidth={1.25} />New venue</span>
             )}
           </div>
+
+
           <div className="">
             <h3 className="text-xl opacity-65 font-extralight my-3">What this place offers</h3>
             <div className="grid grid-cols-2 gap-4">
@@ -131,7 +140,7 @@ export default function VenuesID({ user }) {
 
 
 
-            <DatePicker id={id} />
+            <DatePicker id={id} venue={venue} />
 
 
           </div>

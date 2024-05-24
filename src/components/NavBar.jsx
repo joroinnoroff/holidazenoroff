@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 
 import { PlusIcon } from 'lucide-react';
 
-export default function NavBar({ setUser }) {
+export default function NavBar() {
   const [user, updateUser] = useState(null);
 
 

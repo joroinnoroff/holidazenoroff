@@ -71,6 +71,12 @@ export default function CreateVenues() {
         ...prevData,
         price: isNaN(price) ? 0 : price,
       }));
+    } else if (name === "rating") { // Add condition for rating field
+      const rating = parseFloat(value); // Convert value to a number
+      setFormData((prevData) => ({
+        ...prevData,
+        rating: isNaN(rating) ? 0 : rating, // Set rating to 0 if conversion fails
+      }));
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -78,6 +84,7 @@ export default function CreateVenues() {
       }));
     }
   };
+
 
   useEffect(() => {
     console.log(formData); // Logging the formData for debugging
@@ -258,6 +265,9 @@ export default function CreateVenues() {
                     placeholder="My venue is located in the center of ..."
                   ></textarea>
                 </div>
+
+                <h2>Has it been rated ? if so set your current rating here.</h2>
+                <input type="number" value={formData.rating} onChange={handleChange} placeholder="Set your Rating here" id="rating" name="rating" />
                 <button onClick={handleNextClick} className="rounded">Next</button>
               </div>
             )}

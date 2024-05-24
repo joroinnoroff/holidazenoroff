@@ -4,7 +4,7 @@ import Calendar from "react-calendar";
 import { toast } from "sonner";
 
 export default function DatePicker({ id, venue }) {
-  const [showCalendar, setShowCalendar] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(true);
   const [formData, setFormData] = useState({
     id: id,
     dateTo: "",
@@ -27,6 +27,11 @@ export default function DatePicker({ id, venue }) {
       // Perform any necessary validation here
       if (!dateFrom || !dateTo || !guests) {
         throw new Error("All fields must be filled out");
+      }
+
+      if (guests > venue.maxGuests) {
+        toast.error(`Max amount of guests is ${venue.maxGuests}`);
+        return;
       }
 
       // Create request body
@@ -120,7 +125,7 @@ export default function DatePicker({ id, venue }) {
   return (
     <div className='w-full h-auto'>
 
-      <h1 className='text-lg'>Choose when you want to check in and check out</h1>
+
       {showCalendar ? (
 
         <button onClick={() => setShowCalendar(false)} className="rounded">View Calendar</button>
@@ -130,14 +135,14 @@ export default function DatePicker({ id, venue }) {
           <button onClick={() => setShowCalendar(true)} className="rounded">Hide Calendar</button>
           <form onSubmit={handleSubmit}>
             {formData.dateFrom && formData.dateTo ? (
-              <p className=' text-2xl'>
-                <span className='bold'>Start:</span>{' '}
+              <div className=' text-2xl my-5'>
+                <span className='bold'>Check-in:</span>{' '}
                 {new Date(formData.dateFrom).toDateString()}
                 &nbsp;|&nbsp;
-                <span className='bold'>End:</span> {new Date(formData.dateTo).toDateString()}
-              </p>
+                <span className='bold'>Check-out:</span> {new Date(formData.dateTo).toDateString()}
+              </div>
             ) : (
-              <div className='text-center text-2xl'>
+              <div className=' text-2xl my-5'>
                 <span className='bold'>Selected date:</span>{' '}
                 {formData.dateFrom && new Date(formData.dateFrom).toDateString()}
                 {formData.dateTo && <>&nbsp;|&nbsp;{new Date(formData.dateTo).toDateString()}</>}
