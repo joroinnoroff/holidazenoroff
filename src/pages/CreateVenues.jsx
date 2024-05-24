@@ -2,11 +2,12 @@ import { PlusIcon } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast, Toaster } from "sonner";
-
+import createAni from '../animations/Creating.json'
+import Lottie from 'lottie-react'
 
 export default function CreateVenues() {
   const [introModal, setIntroModal] = useState(true);
-
+  const [isCreating, setIsCreating] = useState(false);
   const [guestCount, setGuestCount] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
   const navigate = useNavigate(); // Initialize useNavigate
@@ -132,11 +133,13 @@ export default function CreateVenues() {
   };
 
 
-
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent form submission from reloading the page
 
     try {
+      // Set isCreating to true to render "Creating..." message and Lottie animation
+      setIsCreating(true);
+
       // Retrieve access token from localStorage
       const accessToken = localStorage.getItem('accessToken');
       console.log(accessToken)
@@ -146,7 +149,6 @@ export default function CreateVenues() {
 
       const url = "https://nf-api.onrender.com/api/v1/holidaze/venues";
 
-
       const response = await fetch(url, {
         method: 'POST',
         headers: {
@@ -154,9 +156,7 @@ export default function CreateVenues() {
           'Authorization': `Bearer ${accessToken}`,
         },
         body: JSON.stringify(formData), // Convert formData to JSON string
-
       });
-
 
       if (!response.ok) {
         throw new Error('Network response was not ok');
@@ -166,13 +166,19 @@ export default function CreateVenues() {
       console.log('Venue created successfully:', responseData);
 
       toast.success(`venue ${responseData.name} venue created`);
+
+      // Simulate creation process with a delay
       setTimeout(() => {
         navigate("/user/venues");
-      }, 1000);
+        // Reset isCreating back to false when submission process is completed
+        setIsCreating(false);
+      }, 8000);
+
       // Optionally, you can reset the form data or perform other actions after successful submission
     } catch (error) {
       console.error('Error creating venue:', error);
-      // Handle errors here
+      // Ensure isCreating is set back to false in case of error
+      setIsCreating(false);
     }
   };
 
@@ -227,6 +233,7 @@ export default function CreateVenues() {
 
             {currentPage === 1 && (
               <div className="p-8 flex items-start justify-center flex-col space-y-10">
+
                 {/* Column 2 (right) */}
                 <div className="h-full border-b ">
                   <p className="text-2xl font-bold">Set a name for your venue</p>
@@ -392,89 +399,78 @@ export default function CreateVenues() {
             )}
 
             {currentPage === 4 && (
-              <div className="h-full w-full">
-                <h2 className="text-2xl md:text-4xl font-bold mb-10">Preview your Venue</h2>
-                <span className="opacity-65 w-3/4 block ">Click to edit if you wanna make changes now, its also possible to edit venue later once posted.</span>
-                <div className="flex items-center my-5">
-                  <span className="text-black opacity-65">Location: <input type="text" name="location.country" className="bg-gray-50 border text-sm md:text-2xl w-3/4 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block border-none ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded" onChange={handleChange} placeholder={formData.location.country} value={formData.location.country} /></span>
-                  <span className="text-black opacity-65">City:                   <input type="text" name="location.city" id="city" className="bg-gray-50 border text-sm md:text-2xl w-3/4 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block border-none ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded" placeholder={formData.location.city} onChange={handleChange} value={formData.location.city} /></span>
-                  <span className="text-black opacity-65">Zip:          <input type="text" name="location.zip" id="zip" className="border w-3/4 p-2 rounded" placeholder="Enter your Zip" onChange={handleChange} value={formData.location.zip} />                    </span>
-
-                </div>
-                <p> Maximum amount of people: {formData.maxGuests} </p>
-                <div className="flex gap-2 flex-wrap my-5">
-                  {formData.media.map((url, index) => (
-                    url ? (
-                      <div key={index} className="w-32 h-32 bg-gray-400 rounded" style={{ backgroundImage: `url(${url})`, backgroundSize: "cover", backgroundPosition: "center" }}></div>
-                    ) : (
-                      <div key={index} className="w-32 h-32 bg-gray-400 rounded"></div>
-                    )
-                  ))}
-                </div>
-                <div className="relative my-6 w-3/4">
-                  <div className="absolute inset-y-0 start-0 flex items-center justify-center ps-3.5 pointer-events-none">
-                    <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M13 2h2v2h1v19h1v-15l6 3v12h1v1h-24v-1h1v-11h7v11h1v-19h1v-2h2v-2h1v2zm8 21v-2h-2v2h2zm-15 0v-2h-3v2h3zm8 0v-2h-3v2h3zm-2-4v-13h-1v13h1zm9 0v-1h-2v1h2zm-18 0v-2h-1v2h1zm4 0v-2h-1v2h1zm-2 0v-2h-1v2h1zm9 0v-13h-1v13h1zm7-2v-1h-2v1h2zm-18-1v-2h-1v2h1zm2 0v-2h-1v2h1zm2 0v-2h-1v2h1zm14-1v-1h-2v1h2zm0-2.139v-1h-2v1h2z" /></svg>
+              <>
+                {isCreating ? (
+                  <div>
+                    <h1>Creating {formData.name}</h1>
+                    <Lottie animationData={createAni} />
                   </div>
-                  <input type="name" name='name' className="bg-gray-50 border-none text-sm md:text-4xl border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleChange} placeholder={formData.name}
-                    value={formData.name}
-                  />
-                </div>
-
-
-                <h2 className="text-2xl font-bold my-6">The description about your place</h2>
-                <textarea
-                  name="description"
-                  value={formData.description}
-                  onChange={handleChange}
-                  cols="30"
-                  rows="10"
-                  className="w-3/4 my-5 resize-none p-2 font-light"
-                  placeholder={formData.description}
-                ></textarea>
-
-                <p>Essentials</p>
-                <div>
-                  {formData.meta.wifi ? (
-                    <div>The venue does have Wifi</div>
-                  ) : (
-                    <div>The venue does not have Wifi</div>
-                  )}
-                </div>
-
-                <div>
-                  {formData.meta.breakfast ? (
-                    <div>Breakfast is included</div>
-                  ) : (
-                    <div>Breakfast is not included</div>
-                  )}
-                </div>
-
-                <div>
-                  {formData.meta.pets ? (
-                    <div>Pets are allowed</div>
-                  ) : (
-                    <div>Pets are not allowed</div>
-                  )}
-                </div>
-
-                <div>
-                  {formData.meta.parking ? (
-                    <div>Parking space is included</div>
-                  ) : (
-                    <div>Parking space is not included</div>
-                  )}
-                </div>
-
-
-                <div className="flex gap-5 items-center mb-5">
-                  {currentPage > 3 && <div onClick={handlePrevClick}>Back</div>}
-                  <button type="submit" className="rounded-full hover:shadow-xl transition-all">Create venue</button>
-                </div>
-              </div>
-
-
-
+                ) : (
+                  <div className="h-full w-full">
+                    <h2 className="text-2xl md:text-4xl font-bold mb-10">Preview your Venue</h2>
+                    <span className="opacity-65 w-3/4 block ">Click to edit if you wanna make changes now, its also possible to edit venue later once posted.</span>
+                    <div className="flex items-center my-5">
+                      <span className="text-black opacity-65">Location: <input type="text" name="location.country" className="bg-gray-50 border text-sm md:text-2xl w-3/4 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block border-none ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded" onChange={handleChange} placeholder={formData.location.country} value={formData.location.country} /></span>
+                      <span className="text-black opacity-65">City:                   <input type="text" name="location.city" id="city" className="bg-gray-50 border text-sm md:text-2xl w-3/4 border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500 block border-none ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 rounded" placeholder={formData.location.city} onChange={handleChange} value={formData.location.city} /></span>
+                      <span className="text-black opacity-65">Zip:          <input type="text" name="location.zip" id="zip" className="border w-3/4 p-2 rounded" placeholder="Enter your Zip" onChange={handleChange} value={formData.location.zip} />                    </span>
+                    </div>
+                    <p> Maximum amount of people: {formData.maxGuests} </p>
+                    <div className="flex gap-2 flex-wrap my-5">
+                      {formData.media.map((url, index) => (
+                        url ? (
+                          <div key={index} className="w-32 h-32 bg-gray-400 rounded" style={{ backgroundImage: `url(${url})`, backgroundSize: "cover", backgroundPosition: "center" }}></div>
+                        ) : (
+                          <div key={index} className="w-32 h-32 bg-gray-400 rounded"></div>
+                        )
+                      ))}
+                    </div>
+                    <div className="relative my-6 w-3/4">
+                      <div className="absolute inset-y-0 start-0 flex items-center justify-center ps-3.5 pointer-events-none">
+                        <svg width="24" height="24" xmlns="http://www.w3.org/2000/svg" fillRule="evenodd" clipRule="evenodd"><path d="M13 2h2v2h1v19h1v-15l6 3v12h1v1h-24v-1h1v-11h7v11h1v-19h1v-2h2v-2h1v2zm8 21v-2h-2v2h2zm-15 0v-2h-3v2h3zm8 0v-2h-3v2h3zm-2-4v-13h-1v13h1zm9 0v-1h-2v1h2zm-18 0v-2h-1v2h1zm4 0v-2h-1v2h1zm-2 0v-2h-1v2h1zm9 0v-13h-1v13h1zm7-2v-1h-2v1h2zm-18-1v-2h-1v2h1zm2 0v-2h-1v2h1zm2 0v-2h-1v2h1zm14-1v-1h-2v1h2zm0-2.139v-1h-2v1h2z" /></svg>
+                      </div>
+                      <input type="name" name='name' className="bg-gray-50 border-none text-sm md:text-4xl border-gray-300 text-gray-900 rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" onChange={handleChange} placeholder={formData.name} value={formData.name} />
+                    </div>
+                    <h2 className="text-2xl font-bold my-6">The description about your place</h2>
+                    <textarea name="description" value={formData.description} onChange={handleChange} cols="30" rows="10" className="w-3/4 my-5 resize-none p-2 font-light" placeholder={formData.description}></textarea>
+                    <p>Essentials</p>
+                    <div>
+                      {formData.meta.wifi ? (
+                        <div>The venue does have Wifi</div>
+                      ) : (
+                        <div>The venue does not have Wifi</div>
+                      )}
+                    </div>
+                    <div>
+                      {formData.meta.breakfast ? (
+                        <div>Breakfast is included</div>
+                      ) : (
+                        <div>Breakfast is not included</div>
+                      )}
+                    </div>
+                    <div>
+                      {formData.meta.pets ? (
+                        <div>Pets are allowed</div>
+                      ) : (
+                        <div>Pets are not allowed</div>
+                      )}
+                    </div>
+                    <div>
+                      {formData.meta.parking ? (
+                        <div>Parking space is included</div>
+                      ) : (
+                        <div>Parking space is not included</div>
+                      )}
+                    </div>
+                    <div className="flex gap-5 items-center mb-5">
+                      {currentPage > 3 && <div onClick={handlePrevClick}>Back</div>}
+                      <button type="submit" className="rounded-full hover:shadow-xl transition-all">Create venue</button>
+                    </div>
+                  </div>
+                )}
+              </>
             )}
+
+
 
           </div>
         </form>
