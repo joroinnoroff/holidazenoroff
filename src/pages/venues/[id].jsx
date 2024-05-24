@@ -46,9 +46,8 @@ export default function VenuesID({ user }) {
 
 
 
-  // Function to handle click on media thumbnails
   const handleMediaClick = (index) => {
-    setSelectedMedia(index); // Update selectedMedia state with the clicked index
+    setSelectedMedia(index);
   };
 
   if (!venue) {
@@ -58,7 +57,7 @@ export default function VenuesID({ user }) {
   return (
     <div className="w-full h-screen mb-20">
       <Toaster />
-      {/* Render big preview of selected media */}
+
       <div className="p-8 grid grid-cols-1 md:grid-cols-2">
         <div className="">
           <img
@@ -73,7 +72,7 @@ export default function VenuesID({ user }) {
                   src={media}
                   alt={`Media ${index}`}
                   className="w-32 h-32 cursor-pointer object-cover rounded"
-                  onClick={() => handleMediaClick(index)} // Call handleMediaClick function on click
+                  onClick={() => handleMediaClick(index)}
                 />
               </div>
             ))}

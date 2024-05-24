@@ -71,8 +71,8 @@ export default function GetAllVenues() {
         filteredVenues.sort((a, b) => new Date(b.created) - new Date(a.created));
 
 
-        setVenues(filteredVenues);
-        setFilteredVenues(filteredVenues); // Initialize Filteredvenues with all venues
+        setVenues(venuesData);
+        setFilteredVenues(venuesData); // Initialize Filteredvenues with all venues
       } catch (error) {
         console.error("Error fetching venues:", error);
       }
