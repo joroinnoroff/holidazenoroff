@@ -70,6 +70,12 @@ export default function EditVenue() {
         ...prevData,
         price: isNaN(price) ? 0 : price,
       }));
+    } else if (name === "rating") { // Add condition for rating field
+      const rating = parseFloat(value); // Convert value to a number
+      setFormData((prevData) => ({
+        ...prevData,
+        rating: isNaN(rating) ? 0 : rating, // Set rating to 0 if conversion fails
+      }));
     } else {
       setFormData((prevData) => ({
         ...prevData,
@@ -172,7 +178,8 @@ export default function EditVenue() {
           maxGuests: venueData.maxGuests,
           location: venueData.location,
           media: venueData.media,
-          price: venueData.price
+          price: venueData.price,
+          rating: venueData.rating
         }));
 
         setGuestCount(venueData.maxGuests);
@@ -284,8 +291,8 @@ export default function EditVenue() {
               </div>
               <p>Price                   <input type="number" name="price" placeholder={formData.price} onChange={handleChange} value={formData.price} /></p>
               <p> Maximum amount of people: {guestCount} </p>
-              <button className="rounded-full text-xs" onClick={increaseGuestCount} >Add more guests</button>
-              <button className="rounded-full text-xs" onClick={decreaseGuestCount} >Remove a guest</button>
+              <button type="button" className="rounded-full text-xs" onClick={increaseGuestCount} >Add more guests</button>
+              <button type="button" className="rounded-full text-xs" onClick={decreaseGuestCount} >Remove a guest</button>
 
 
               <div className="flex gap-2 flex-wrap my-5">
@@ -335,6 +342,8 @@ export default function EditVenue() {
                 />
               </div>
               <h2 className="text-2xl font-bold my-6">The description about your place</h2>
+              <span>Have you received some rating ? </span>
+              <input type="number" value={formData.rating} onChange={handleChange} placeholder={formData.rating} id="rating" name="rating" />
               <textarea
                 name="description"
                 value={formData.description}

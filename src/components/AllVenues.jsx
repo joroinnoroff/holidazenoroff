@@ -14,11 +14,10 @@ export default function GetAllVenues() {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.5 });
   const [venues, setVenues] = useState([]);
-  const [Filteredvenues, setFilteredVenues] = useState([]);
+  const [filteredVenues, setFilteredVenues] = useState([]);
   const [currentPage,] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
-
-
+  const [sortCriteria, setSortCriteria] = useState({ field: 'price', direction: 'asc' });
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -31,7 +30,6 @@ export default function GetAllVenues() {
         const queryParams = new URLSearchParams(window.location.search);
         const countryFilter = queryParams.get('country');
 
-        // Construct URL with filters and sorting
         let url = 'https://nf-api.onrender.com/api/v1/holidaze/venues?_sort=created:desc';
         let params = [];
 
@@ -52,7 +50,6 @@ export default function GetAllVenues() {
 
         const venuesData = await response.json();
 
-        // Filter and sort venues as before
         let filteredVenues = venuesData.filter(
           (venue) => venue.media && venue.media.length > 0
         );
@@ -61,18 +58,16 @@ export default function GetAllVenues() {
           ...filteredVenues.filter(venue => venue.media.length <= 1)
         ];
 
-        // Filter by country if countryFilter is present
         if (countryFilter) {
           filteredVenues = sortedVenues.filter(venue => venue.location.country === countryFilter);
         } else {
-          filteredVenues = sortedVenues; // If no country filter, use all venues
+          filteredVenues = sortedVenues;
         }
-        // Sort by creation date (ensure sorting by 'created' property is in descending order)
+
         filteredVenues.sort((a, b) => new Date(b.created) - new Date(a.created));
 
-
         setVenues(filteredVenues);
-        setFilteredVenues(filteredVenues); // Initialize Filteredvenues with all venues
+        setFilteredVenues(filteredVenues);
       } catch (error) {
         console.error("Error fetching venues:", error);
       }
@@ -90,8 +85,22 @@ export default function GetAllVenues() {
         item.price.toString().includes(lowercasedFilter)
       );
     });
-    setFilteredVenues(filteredData);
-  }, [searchQuery, venues]);
+
+    const sortedData = filteredData.sort((a, b) => {
+      if (sortCriteria.field === 'price' || sortCriteria.field === 'rating') {
+        return sortCriteria.direction === 'asc' ? a[sortCriteria.field] - b[sortCriteria.field] : b[sortCriteria.field] - a[sortCriteria.field];
+      } else if (sortCriteria.field === 'maxGuests') {
+        return sortCriteria.direction === 'asc' ? a.maxGuests - b.maxGuests : b.maxGuests - a.maxGuests;
+      }
+      return 0;
+    });
+
+    setFilteredVenues(sortedData);
+  }, [searchQuery, sortCriteria, venues]);
+
+  const handleSort = (field, direction) => {
+    setSortCriteria({ field, direction });
+  };
 
   return (
     <div className="container mx-auto py-8">
@@ -100,10 +109,12 @@ export default function GetAllVenues() {
         <FilterVenues setVenues={setVenues} venues={venues} />
         <div className="flex justify-between items-center">
           <div className="hidden lg:flex space-x-5">
-            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Lowest to highest $</Link>
-            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Lowest to highest rating</Link>
-            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Most amount of people</Link>
-            <Link to={""} className="text-xs font-light py-3 px-3 border rounded-full">Least amount of people</Link>
+            <button onClick={() => handleSort('price', 'asc')} className="text-xs font-light py-3 px-3 border rounded-full">Lowest to highest $</button>
+            <button onClick={() => handleSort('price', 'desc')} className="text-xs font-light py-3 px-3 border rounded-full">Highest to lowest $</button>
+            <button onClick={() => handleSort('rating', 'asc')} className="text-xs font-light py-3 px-3 border rounded-full">Lowest to highest rating</button>
+            <button onClick={() => handleSort('rating', 'desc')} className="text-xs font-light py-3 px-3 border rounded-full">Highest to lowest rating</button>
+            <button onClick={() => handleSort('maxGuests', 'desc')} className="text-xs font-light py-3 px-3 border rounded-full">Most amount of people</button>
+            <button onClick={() => handleSort('maxGuests', 'asc')} className="text-xs font-light py-3 px-3 border rounded-full">Least amount of people</button>
           </div>
           <div className="flex flex-col">
             <input
@@ -114,12 +125,12 @@ export default function GetAllVenues() {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
-            <span className="text-xs items-end justify-end flex p-2">Amount of venues: {Filteredvenues.length}</span>
+            <span className="text-xs items-end justify-end flex p-2">Amount of venues: {filteredVenues.length}</span>
           </div>
         </div>
       </div>
       <motion.div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 my-5">
-        {Filteredvenues.map((venue, index) => (
+        {filteredVenues.map((venue, index) => (
           <motion.div
             key={index}
             className="flex flex-col"

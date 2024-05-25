@@ -9,18 +9,18 @@ export default function FilterVenues({ venues, setVenues }) {
   const FilteringModal = {
     open: {
       width: "100%",
-      height: "100%",
+      height: "150%",
       backgroundColor: "#FFF",
       top: "10px",
       left: "5px",
-      zIndex: 10, // "zIndex" should be in camelCase
+      zIndex: 10,
       transition: { duration: 0.75, type: "tween", ease: [0.76, 0, 0.24, 1] }
     },
     closed: {
       width: "100px",
       height: "40px",
       top: "260px",
-      left: "90%",
+      left: "85%",
       transition: { duration: 0.75, delay: 0.35, type: "tween", ease: [0.76, 0, 0.24, 1] }
     }
   };

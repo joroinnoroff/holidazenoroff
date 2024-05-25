@@ -30,7 +30,7 @@ export default function DatePicker({ id, venue }) {
       }
 
       if (guests > venue.maxGuests) {
-        toast.error(`Max amount of guests is ${venue.maxGuests}`);
+        toast.error(`Max amount of guests is ${venue.maxGuests} people`);
         return;
       }
 
