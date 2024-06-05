@@ -25,7 +25,7 @@ Installing
 
 
 **Clone the repo:**
-gh repo clone joroinnoroff/jo-semestertask2
+gh repo clone joroinnoroff/holidazenoroff
 Install the dependencies:
 npm install
 
